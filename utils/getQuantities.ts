@@ -22,7 +22,7 @@ export default async function getQuantities(message: string) {
   const query = `
   From the following message validate if its requesting a quote.
   If it is valid then extract the products along with quantities requested.
-  Return the extracted data in form of valid JSON string formatted as ${formattedData}.
+  Return the extracted data in form of a JSON string formatted as ${formattedData}.
   If it is invalid then return 'Invalid Data'. 
   Message: ${message}`;
 
@@ -44,6 +44,6 @@ export default async function getQuantities(message: string) {
   } catch (error) {
     // Handle errors
     console.error('Error querying OpenAI:', error);
-    throw new Error(`Error querying OpenAI: ${error}`);
+    return [];
   }
 }
