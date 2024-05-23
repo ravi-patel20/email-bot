@@ -1,5 +1,3 @@
-import puppeteer, { Browser, Page } from 'puppeteer';
-
 export interface Product {
   name: string;
   quantity: number;
@@ -14,13 +12,33 @@ export interface QuoteMetaData {
 
 export default async function generateQuotePDF(metadata: QuoteMetaData) {
   let { email, products, name } = metadata;
-  let browser: Browser | null = null;
+  let browser = null;
   let outputPath = name.trim().replace(/ /g, '_') + Date.now() + '.png';
+  let chrome;
+  let puppeteer;
+  let launchArgs;
+  if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+    // running on the Vercel platform.
+    chrome = require('chrome-aws-lambda');
+    puppeteer = require('puppeteer-core');
+    launchArgs = {
+      args: [...chrome?.args, '--hide-scrollbars', '--disable-web-security'],
+      defaultViewport: chrome?.defaultViewport,
+      executablePath: await chrome?.executablePath,
+      headless: chrome?.headless,
+      ignoreHTTPSErrors: true,
+    };
+  } else {
+    // running locally.
+    puppeteer = require('puppeteer');
+    console.log('running locally');
+  }
 
   try {
     // Launch a headless browser
-    browser = await puppeteer.launch();
-    const page: Page = await browser.newPage();
+    browser = await puppeteer.launch(launchArgs);
+    console.log('browser initialized');
+    const page = await browser.newPage();
     // Create the HTML content
     const htmlContent = `
       <html>
@@ -70,7 +88,6 @@ export default async function generateQuotePDF(metadata: QuoteMetaData) {
       </html>
     `;
 
-    page.on('console', msg => console.log('PAGE LOG:', msg.text()));
     // Set the content of the page
     await page.setContent(htmlContent);
     await page.screenshot({ path: `./quotes/${outputPath}`, fullPage: true });

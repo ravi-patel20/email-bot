@@ -20,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  if (!generatedPDFUrl?.length) {
+  if (!generatedPDFUrl || !generatedPDFUrl?.length) {
     res.status(400);
     return res.send('Failure generating a quote');
   }
