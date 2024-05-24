@@ -19,7 +19,7 @@ export default async function generateQuotePDF(metadata: QuoteMetaData) {
   let launchArgs;
   if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
     // running on the Vercel platform.
-    chrome = require('chrome-aws-lambda');
+    chrome = require("@sparticuz/chromium");
     puppeteer = require('puppeteer-core');
     launchArgs = {
       args: [...chrome?.args, '--hide-scrollbars', '--disable-web-security'],

@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@sparticuz/chromium": "^123.0.1",
-    "chrome-aws-lambda": "^10.1.0",
     "mailgun-js": "^0.6.7",
     "openai": "^4.47.1",
     "puppeteer": "^22.9.0",
